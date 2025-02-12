@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: filter 0.3s ease;
+        }
+        .blurred {
+            filter: blur(5px);
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            width: 350px;
+            text-align: center;
+        }
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        label {
+            font-size: 14px;
+            color: #d4d4d4;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #2e2e2e;
+            color: #f5f5f5;
+            font-size: 16px;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #bb86fc;
+        }
+        button {
+            background-color: #bb86fc;
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #9f6fd0;
+        }
+        #uploadBtn {
+            background-color: #1d1f1e;
+            margin-top: 10px;
+            cursor: not-allowed;
+        }
+        #uploadBtn.enabled {
+            cursor: pointer;
+            background-color: #08adad;
+        }
+        #message {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 500px;
+            z-index: 1000;
+        }
+        .modal.show {
+            display: block;
+        }
+        .modal-header {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+        .modal-body label {
+            color: #d4d4d4;
+        }
+        .modal-body input[type="text"], .modal-body input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #2e2e2e;
+            color: #f5f5f5;
+        }
+        .modal-body input:focus {
+            border-color: #03dac6;
+        }
+        .modal-body button {
+            background-color: #03dac6;
+            color: #ffffff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .modal-body button:hover {
+            background-color: #018786;
+        }
+        .close-modal {
+            color: #ffffff;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+        }
+        .back-link {
+            margin-top: 20px;
+            display: block;
+            color: #bb86fc;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        .loading .spinner {
+            display: block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainContent">
+    <h2>Login</h2>
+    <div id="message"></div>
+    <form id="loginForm">
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+
+    <button id="uploadBtn" disabled>Upload File</button>
+
+    <a href="/" class="back-link">Go back to homepage</a>
+</div>
+
+<!-- Modal for file upload -->
+<div class="modal" id="uploadModal">
+    <span class="close-modal" id="closeModal">&times;</span>
+    <div class="modal-header">
+        Upload File
+    </div>
+    <div class="modal-body">
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div>
+                <label for="file">Choose File:</label>
+                <input type="file" id="file" name="file" required>
+            </div>
+            <div class="spinner" id="spinner"></div>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const loginForm = document.getElementById('loginForm');
+    const messageDiv = document.getElementById('message');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const uploadModal = document.getElementById('uploadModal');
+    const uploadForm = document.getElementById('uploadForm');
+    const mainContent = document.getElementById('mainContent');
+    const closeModal = document.getElementById('closeModal');
+    const spinner = document.getElementById('spinner');
+
+    // Handle login form submission
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(loginForm);
+        const response = await fetch('/login', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        if (result.success) {
+            messageDiv.textContent = result.message;
+            uploadBtn.disabled = false;
+            uploadBtn.classList.add('enabled');
+        } else {
+            messageDiv.textContent = result.message;
+        }
+    });
+
+    // Show the modal on "Upload File" button click
+    uploadBtn.addEventListener('click', function() {
+        if (!uploadBtn.disabled) {
+            uploadModal.classList.add('show');
+            mainContent.classList.add('blurred'); // Blur background when modal is shown
+        }
+    });
+
+    // Close the modal and remove blur effect
+    closeModal.addEventListener('click', function() {
+        uploadModal.classList.remove('show');
+        mainContent.classList.remove('blurred'); // Remove blur when modal is closed
+    });
+
+    // Handle file upload form submission
+    uploadForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        spinner.classList.add('loading');
+        spinner.style.display='block';
+        const formData = new FormData(uploadForm);
+
+        // Setup timeout for 50 seconds using AbortController
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+            controller.abort();
+            alert("File upload still in progress, will be completed soon.");
+            window.location.href = '/';
+        }, 50000);
+
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData,
+                signal: controller.signal
+            });
+
+            if (response.ok) {
+                alert("File uploaded successfully!");
+                uploadModal.classList.remove('show');
+                mainContent.classList.remove('blurred');
+            } else {
+                alert("File upload failed.");
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.log('Request aborted due to timeout.');
+            } else {
+                console.error('Upload error:', error);
+            }
+        } finally {
+            spinner.classList.remove('loading');
+            spinner.style.display='none';
+            clearTimeout(timeoutId);
+        }
+    });
+</script>
+
+</body>
+</html>

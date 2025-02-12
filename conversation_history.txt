@@ -1,0 +1,5 @@
+user: who developed you
+user: I am a graduate from accounting and finance, so what can I learn in SAP
+user: what should be the prerequisites
+user: I don't have any programming knowledge, how could get on with that in this
+user: can you export all the chat in to a PDF or docx
