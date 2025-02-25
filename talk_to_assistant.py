@@ -12,7 +12,7 @@ from collections import deque
 
 
 
-client=OpenAI(api_key = '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')
+client=OpenAI(api_key = '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')
 app = Flask(__name__)
 app.secret_key = 'key_key_key_key_key'
 
@@ -305,6 +305,6 @@ def file_management(filename):
       pass  
   
   return "SUCCESS"
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Get the PORT from environment or default to 5000
-    app.run(host="0.0.0.0", port=port, debug=True)
+if __name__=='__main__':
+    app.run("0.0.0.0",debug=True,port=8080)
+

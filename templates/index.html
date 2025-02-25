@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Interface Example</title>
+    <link href="https://fonts.cdnfonts.com/css/montserrat" rel="stylesheet">
+    <title>Mygo Consulting</title>
     <style>
         /* Your existing CSS here */
         body {
@@ -13,7 +14,7 @@
             justify-content: flex-start;
             height: 100vh;
             background-color: #121213;
-            font-family:Arial, Helvetica, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             color: #f0eaea;
             margin: 0;
         }
@@ -38,11 +39,13 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
             overflow-x: hidden;
             overflow-y: auto;
+            line-spacing:1;
+            font-size:large;
             height: 70vh;
             margin-bottom: 20px;
             scrollbar-width: thin;
             scrollbar-color: #007bff #121212;
-            
+
         }
 
         #chat-container::-webkit-scrollbar {
@@ -61,6 +64,7 @@
         .message {
             width: 100%;
             padding: 10px;
+
             margin-bottom: 10px;
             border-radius: 5px;
             background-color: #2e2e2e;
@@ -95,10 +99,10 @@
             border: 2px solid transparent;
             outline: none;
             transition: border 0.3s ease-in-out;
-            
+
         }
 
-      
+
 
 
 /* CSS */
@@ -155,7 +159,7 @@
   top: 50%;
   left: 50%;
   -webkit-transform: translateY(-50%) translateX(-50%);
-  
+
   > div {
     height: 100%;
     width: 8px;
@@ -165,7 +169,7 @@
     -webkit-animation: delay 0.8s infinite ease-in-out;
     animation: delay 0.8s infinite ease-in-out;
   }
-  
+
   .bar1{
     background-color: #754fa0 ;
   }
@@ -198,15 +202,15 @@
 
 
 @-webkit-keyframes delay {
-  0%, 40%, 100% { -webkit-transform: scaleY(0.05) }  
+  0%, 40%, 100% { -webkit-transform: scaleY(0.05) }
   20% { -webkit-transform: scaleY(1.0) }
 }
 
 @keyframes delay {
-  0%, 40%, 100% { 
+  0%, 40%, 100% {
     transform: scaleY(0.05);
     -webkit-transform: scaleY(0.05);
-  }  20% { 
+  }  20% {
     transform: scaleY(1.0);
     -webkit-transform: scaleY(1.0);
   }
@@ -219,7 +223,7 @@
         }
 
         .quesdiv {
-            color: rgb(243, 247, 7);
+            color: #FFD700;
             background-color: #8a878780;
             width: 95vw;
         }
@@ -267,14 +271,18 @@
         #upload-button {
             margin-top: 10px;
         }
+        #input
+        {
+            font-size: larger;
+        }
     </style>
 </head>
 <body>
-    <h1>MYGO GenAI - SAP IQ</h1>
+    <h1>Mygo Consulting</h1>
     <div id="chat-container"></div>
 
     <form>
-        <textarea id="input" placeholder="Enter your message" rows="2"></textarea>
+        <textarea id="input" placeholder="Enter your message" rows="2" ></textarea>
         <button type="submit" class="button-23">Send</button>
         <div class="loader" id="loader" style="display: none;">
             <div class="bar1"></div>
@@ -336,8 +344,8 @@
             chatContainer.appendChild(x);
             chatContainer.appendChild(y);
             chatContainer.scrollTo(0, chatContainer.scrollHeight);
-            z.innerHTML = "Ques: " + userMessage + " :: ";
-            
+            z.innerHTML = "Ques: " + userMessage ;
+
             const response = await fetch("/answer", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
