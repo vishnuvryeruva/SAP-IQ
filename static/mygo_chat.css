@@ -1,0 +1,572 @@
+/* Mygo Consulting Chatbot Theme */
+body {
+    font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    background: #1a1a2e;
+    color: #e9e9f3;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+/* App Layout Structure */
+#app-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Company Branding */
+.company-branding {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.3rem 1rem 0.3rem 1rem;
+    position: relative;
+    top: 0;
+    z-index: 10;
+}
+
+.company-branding .logo {
+    width: 1.8rem;
+    height: 1.8rem;
+    flex-shrink: 0;
+}
+
+.brand-text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.3rem;
+    line-height: 1.1;
+}
+
+.company-branding .brand-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #2563eb;
+    letter-spacing: 0.02em;
+}
+
+.company-branding .brand-sub {
+    font-size: 0.75rem;
+    color: #60a5fa;
+}
+/* Header */
+.topbar {
+    width: 100%;
+    background: #232946;
+    border-bottom: 1px solid #2a3352;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 2px 10px 0 rgba(0,0,0,0.1);
+}
+
+.topbar-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #2563eb;
+    letter-spacing: 0.03em;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.module-indicator {
+    font-size: 0.9rem;
+    color: #8892b0;
+}
+
+.controls-separator {
+    height: 1.6rem;
+    width: 1px;
+    background-color: #3d4564;
+    margin: 0 0.5rem;
+}
+
+.control-button {
+    background: none;
+    border: none;
+    color: #8892b0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.control-button:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.logout-button {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #8892b0;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.4rem;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+
+.logout-button:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+/* Sidebar */
+.sidebar {
+    background: #1e213a;
+    border-right: 1px solid #2a3352;
+    width: 240px;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0.5rem 0 1rem;
+}
+
+.sidebar-heading {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #8892b0;
+    margin: 1.2rem 0 0.8rem 0;
+    letter-spacing: 0.05em;
+    padding-left: 0.5rem;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 2rem;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.5rem;
+    border-radius: 0.4rem;
+    transition: background 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: #e2e8f0;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+}
+
+.sidebar-item:hover {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.sidebar-item-active {
+    background: rgba(59, 130, 246, 0.15);
+}
+
+.sidebar-icon {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2a3352;
+    border-radius: 0.3rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    color: #e2e8f0;
+}
+
+.sidebar-icon-active {
+background: #3b82f6;
+color: white;
+}
+
+.sidebar-label {
+font-size: 0.85rem;
+line-height: 1.2;
+}
+
+/* Developed by section */
+.developed-by {
+margin-top: auto;
+padding: 1rem 0 1.5rem 0.5rem;
+border-top: 1px solid #2a3352;
+}
+
+.developed-label {
+font-size: 0.7rem;
+color: #8892b0;
+margin-bottom: 0.2rem;
+}
+
+.developed-company {
+font-size: 0.85rem;
+font-weight: 500;
+color: #e2e8f0;
+margin-bottom: 0.1rem;
+}
+
+.developed-partner {
+font-size: 0.7rem;
+color: #8892b0;
+}
+
+/* Sidebar & Topbar Softening */
+.bg-gray-800 { background: #20243a !important; }
+.rounded-lg { border-radius: 1rem !important; }
+/* Chat Area */
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: #232946;
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth;
+}
+/* Message Container */
+.message-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.message-row-user {
+    align-items: flex-end;
+}
+
+.message-row-assistant {
+    align-items: flex-start;
+}
+
+.message-row-system {
+    align-items: center;
+}
+
+/* Message attribution (who is speaking) */
+.message-attribution {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    font-size: 0.85rem;
+    color: #a0aec0;
+}
+
+.message-avatar {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.75rem;
+}
+
+/* Message Bubbles */
+.message-bubble {
+    display: inline-block;
+    max-width: 80%;
+    margin-bottom: 0.25rem;
+    padding: 1rem 1.2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
+    word-break: break-word;
+}
+
+.message-user {
+    background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+    color: #fff;
+    border-bottom-right-radius: 0.25rem;
+}
+
+.message-assistant {
+    background: #f8fafc;
+    color: #334155;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.message-system {
+    background: #334155;
+    color: #e2e8f0;
+    font-style: italic;
+    font-size: 0.9rem;
+    border-radius: 0.5rem;
+    padding: 0.7rem 1rem;
+    text-align: center;
+    max-width: 85%;
+}
+
+/* Message Content */
+.message-content {
+    line-height: 1.5;
+    width: 100%;
+}
+
+/* When user has multiple consecutive messages */
+.message-consecutive {
+    margin-top: 0.25rem;
+}
+
+/* Paragraphs in messages */
+.message-bubble .message-content p {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+.message-bubble .message-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Ensure message content has proper spacing */
+.message-content br {
+    margin-bottom: 0.5rem;
+}
+
+/* Make sure all content displays properly */
+.message-bubble {
+    max-width: 80%;
+    width: auto;
+}
+
+.message-row-user .message-bubble {
+    text-align: right;
+}
+
+.message-row-assistant .message-bubble {
+    text-align: left;
+}
+@keyframes fadeInUp {
+    0% {opacity: 0; transform: translateY(16px);}
+    100% {opacity: 1; transform: translateY(0);}
+}
+/* Input Area */
+.input-container {
+    background: #1e213a;
+    border-top: 1px solid #2a3352;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.text-input {
+    flex: 1;
+    background: #232946;
+    border: 1px solid #2a3352;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    resize: none;
+    min-height: 2.5rem;
+    max-height: 150px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.text-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Consistent Button Styles */
+.action-button {
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-button:active {
+    transform: scale(0.98);
+}
+
+.primary-button {
+    background: #3b82f6;
+    color: white;
+}
+
+.primary-button:hover {
+    background: #2563eb;
+}
+
+.secondary-button {
+    background: rgba(59, 130, 246, 0.15);
+    color: #e2e8f0;
+}
+
+.secondary-button:hover {
+    background: rgba(59, 130, 246, 0.25);
+}
+/* Code Block Styles */
+.code-block {
+    background: #1e293b;
+    border-radius: 0.5rem;
+    border-left: 3px solid #3b82f6;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin: 0.75rem 0;
+    overflow: hidden;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.code-block-header {
+    background: #263146;
+    color: #94a3b8;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #334155;
+}
+
+.code-block-content {
+    padding: 0.75rem;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 400px;
+    font-family: 'Fira Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-size: 0.9rem;
+    background: #1e293b;
+    color: #e2e8f0;
+    line-height: 1.5;
+}
+
+.code-block-footer {
+    background: #263146;
+    color: #94a3b8;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    border-top: 1px solid #334155;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.line-numbers {
+    color: #7c8ca5;
+    font-size: 0.95em;
+    padding-right: 1.1rem;
+    text-align: right;
+    border-right: 1px solid #232946;
+    margin-right: 1.2rem;
+    user-select: none;
+}
+.code-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+.code-action-button {
+    background: none;
+    border: none;
+    color: #a0aec0;
+    padding: 0.4rem 0.5rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+}
+.code-action-button:hover {
+    background: #2563eb22;
+    color: #2563eb;
+}
+.code-type-label {
+    background: #2563eb22;
+    color: #2563eb;
+    border-radius: 0.3rem;
+    padding: 0.15rem 0.7rem;
+    font-size: 0.82em;
+    font-weight: 600;
+    margin-right: 0.8rem;
+}
+.code-block pre {
+    margin: 0;
+}
+.code-block code {
+    font-family: 'Fira Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-size: 1.05rem;
+    background: none;
+    color: #e9e9f3;
+}
+/* Syntax Highlighting Enhancements */
+.hljs-keyword { color: #c792ea; }
+.hljs-string { color: #ecc48d; }
+.hljs-comment { color: #7c8ca5; font-style: italic; }
+.hljs-function { color: #82aaff; }
+.hljs-number { color: #f78c6c; }
+.hljs-operator { color: #89ddff; }
+
+/* Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.7);
+}
+
+/* Typing Indicator */
+.typing-indicator-dots {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.typing-indicator-dots span {
+    width: 8px;
+    height: 8px;
+    background-color: #3b82f6;
+    border-radius: 50%;
+    display: inline-block;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}

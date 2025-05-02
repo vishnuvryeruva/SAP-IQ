@@ -3,431 +3,1295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.cdnfonts.com/css/montserrat" rel="stylesheet">
-    <title>Mygo Consulting</title>
-    <style>
-        /* Your existing CSS here */
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            background-color: #121213;
-            font-family: 'Montserrat', sans-serif;
-            color: #f0eaea;
-            margin: 0;
-        }
-
-        h1 {
-            margin: 20px;
-            font-size: 24px;
-            color: #fcfcfc;
-        }
-
-        #chat-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-            min-width: 90%;
-            max-width: 100%;
-            background-color: #0f0f0f;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-            overflow-x: hidden;
-            overflow-y: auto;
-            line-spacing:1;
-            font-size:large;
-            height: 70vh;
-            margin-bottom: 20px;
-            scrollbar-width: thin;
-            scrollbar-color: #007bff #121212;
-
-        }
-
-        #chat-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #chat-container::-webkit-scrollbar-track {
-            background: #121212;
-        }
-
-        #chat-container::-webkit-scrollbar-thumb {
-            background-color: #007bff;
-            border-radius: 8px;
-        }
-
-        .message {
-            width: 100%;
-            padding: 10px;
-
-            margin-bottom: 10px;
-            border-radius: 5px;
-            background-color: #2e2e2e;
-            display: flex;
-            flex-direction: column;
-            color: #ffffff;
-        }
-
-        .message.user {
-            align-self: flex-end;
-        }
-
-        .message.bot {
-            align-self: flex-start;
-        }
-
-        form {
-            display: flex;
-            width: 100%;
-            max-width: 800px;
-            margin-bottom: 20px;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #333;
-            border-radius: 8px;
-            resize: none;
-            background-color: #1e1e1e;
-            color: #ffffff;
-            border: 2px solid transparent;
-            outline: none;
-            transition: border 0.3s ease-in-out;
-
-        }
-
-
-
-
-/* CSS */
-.button-23 {
-  background-color: #FFFFFF;
-  border: 1px solid #222222;
-  border-radius: 8px;
-  box-sizing: border-box;
-  color: #222222;
-  cursor: pointer;
-  display: inline-block;
-  font-family: Circular,-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 20px;
-  margin: 0;
-  outline: none;
-  padding: 13px 23px;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  touch-action: manipulation;
-  transition: box-shadow .2s,-ms-transform .1s,-webkit-transform .1s,transform .1s;
-  user-select: none;
-  -webkit-user-select: none;
-  width: auto;
-}
-
-.button-23:focus-visible {
-  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
-  transition: box-shadow .2s;
-}
-
-.button-23:active {
-  background-color: #F7F7F7;
-  border-color: #000000;
-  transform: scale(.96);
-}
-
-.button-23:disabled {
-  border-color: #DDDDDD;
-  color: #DDDDDD;
-  cursor: not-allowed;
-  opacity: 1;
-}
-
-        .loader {
-  margin: 0 auto;
-  width: 60px;
-  height: 50px;
-  text-align: center;
-  font-size: 10px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translateY(-50%) translateX(-50%);
-
-  > div {
-    height: 100%;
-    width: 8px;
-    display: inline-block;
-    float: left;
-    margin-left: 2px;
-    -webkit-animation: delay 0.8s infinite ease-in-out;
-    animation: delay 0.8s infinite ease-in-out;
-  }
-
-  .bar1{
-    background-color: #754fa0 ;
-  }
-  .bar2{
-    background-color: #09b7bf;
-    -webkit-animation-delay: -0.7s;
-    animation-delay: -0.7s;
-  }
-  .bar3{
-    background-color: #90d36b;
-    -webkit-animation-delay: -0.6s;
-    animation-delay: -0.6s;
-  }
-  .bar4{
-    background-color: #194168;
-    -webkit-animation-delay: -0.5s;
-    animation-delay: -0.5s;
-  }
-  .bar5{
-    background-color: #fcb12b;
-    -webkit-animation-delay: -0.4s;
-    animation-delay: -0.4s;
-  }
-  .bar6{
-    background-color: #ed1b72;
-    -webkit-animation-delay: -0.3s;
-    animation-delay: -0.3s;
-  }
-}
-
-
-@-webkit-keyframes delay {
-  0%, 40%, 100% { -webkit-transform: scaleY(0.05) }
-  20% { -webkit-transform: scaleY(1.0) }
-}
-
-@keyframes delay {
-  0%, 40%, 100% {
-    transform: scaleY(0.05);
-    -webkit-transform: scaleY(0.05);
-  }  20% {
-    transform: scaleY(1.0);
-    -webkit-transform: scaleY(1.0);
-  }
-}
-
-        .answerdiv {
-            color: rgb(240, 235, 235);
-            background-color: #333;
-            width: 95vw;
-        }
-
-        .quesdiv {
-            color: #FFD700;
-            background-color: #8a878780;
-            width: 95vw;
-        }
-        /* Additional CSS for modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            border-radius: 8px;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .button-23 {
-            /* your existing button styling */
-        }
-
-        #upload-button {
-            margin-top: 10px;
-        }
-        #input
-        {
-            font-size: larger;
-        }
-    </style>
+    <title>Mygo SAP Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mygo_chat.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='settings-modal.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/abap.min.js"></script>
 </head>
-<body>
-    <h1>Mygo Consulting</h1>
-    <div id="chat-container"></div>
+<body class="bg-gray-900 text-white">
+    <!-- Hidden element to pass data from server to client -->
+    <script type="application/json" id="server-data">
+        {"showSettings": {{ show_settings|default(false)|tojson }}, "currentModule": "{{ current_module }}"}
+    </script>
+    
+    <div id="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Company Branding Top Left -->
+            <div class="company-branding">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Mygo Consulting Logo" class="logo">
+                <div class="brand-text">
+                    <div class="brand-title">Mygo Consulting</div>
+                    <span class="brand-sub">SAP Certified Partner</span>
+                </div>
+            </div>
+            <!-- Spacer for previous logo/company section -->
+            <div class="mb-8"></div>
+            
+            <!-- Module Selection -->
+            <div class="space-y-6 flex-1">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">SAP Modules</h3>
+                    <nav class="space-y-2.5">
+                        <a href="{{ url_for('module', module_name='fico') }}" 
+                           class="group flex items-center justify-between w-full px-3 py-2.5 text-sm rounded-lg transition-colors {% if current_module == 'fico' %}bg-blue-600 text-white{% else %}text-gray-300 hover:bg-gray-700{% endif %}">
+                            <div class="flex items-center">
+                                <span class="font-medium">FI/CO</span>
+                            </div>
+                            <span class="text-xs opacity-75">Finance & Controlling</span>
+                        </a>
+                        
+                        <a href="{{ url_for('module', module_name='mm') }}"
+                           class="group flex items-center justify-between w-full px-3 py-2.5 text-sm rounded-lg transition-colors {% if current_module == 'mm' %}bg-blue-600 text-white{% else %}text-gray-300 hover:bg-gray-700{% endif %}">
+                            <div class="flex items-center">
+                                <span class="font-medium">MM</span>
+                            </div>
+                            <span class="text-xs opacity-75">Materials Management</span>
+                        </a>
+                        
+                        <a href="{{ url_for('module', module_name='sd') }}"
+                           class="group flex items-center justify-between w-full px-3 py-2.5 text-sm rounded-lg transition-colors {% if current_module == 'sd' %}bg-blue-600 text-white{% else %}text-gray-300 hover:bg-gray-700{% endif %}">
+                            <div class="flex items-center">
+                                <span class="font-medium">SD</span>
+                            </div>
+                            <span class="text-xs opacity-75">Sales & Distribution</span>
+                        </a>
+                        
+                        <a href="{{ url_for('module', module_name='pp') }}"
+                           class="group flex items-center justify-between w-full px-3 py-2.5 text-sm rounded-lg transition-colors {% if current_module == 'pp' %}bg-blue-600 text-white{% else %}text-gray-300 hover:bg-gray-700{% endif %}">
+                            <div class="flex items-center">
+                                <span class="font-medium">PP</span>
+                            </div>
+                            <span class="text-xs opacity-75">Production Planning</span>
+                        </a>
+                        
+                        <a href="{{ url_for('module', module_name='hcm') }}"
+                           class="group flex items-center justify-between w-full px-3 py-2.5 text-sm rounded-lg transition-colors {% if current_module == 'hcm' %}bg-blue-600 text-white{% else %}text-gray-300 hover:bg-gray-700{% endif %}">
+                            <div class="flex items-center">
+                                <span class="font-medium">HCM</span>
+                            </div>
+                            <span class="text-xs opacity-75 text-right">Human Capital Management</span>
+                        </a>
+                        
+                        <a href="{{ url_for('module', module_name='ewm') }}"
+                           class="group flex items-center justify-between w-full px-3 py-2.5 text-sm rounded-lg transition-colors {% if current_module == 'ewm' %}bg-blue-600 text-white{% else %}text-gray-300 hover:bg-gray-700{% endif %}">
+                            <div class="flex items-center">
+                                <span class="font-medium">EWM</span>
+                            </div>
+                            <span class="text-xs opacity-75 text-right">Extended Warehouse Management</span>
+                        </a>
+                    </nav>
+                </div>
 
-    <form>
-        <textarea id="input" placeholder="Enter your message" rows="2" ></textarea>
-        <button type="submit" class="button-23">Send</button>
-        <div class="loader" id="loader" style="display: none;">
-            <div class="bar1"></div>
-            <div class="bar2"></div>
-            <div class="bar3"></div>
-            <div class="bar4"></div>
-            <div class="bar5"></div>
-            <div class="bar6"></div>
-        </div>
-    </form>
+                <!-- Quick Actions -->
+                <div class="mt-8">
+                    <h3 class="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">Quick Actions</h3>
+                    <nav class="space-y-2.5">
+                        <button onclick="handleNewChat()" 
+                                class="flex items-center w-full px-3 py-2.5 text-sm text-gray-300 rounded-lg hover:bg-gray-700 transition-colors">
+                            <span class="font-medium">New Chat</span>
+                        </button>
+                        <button onclick="showClearHistoryModal()" 
+                                class="flex items-center w-full px-3 py-2.5 text-sm text-gray-300 rounded-lg hover:bg-gray-700 transition-colors text-left">
+                            <span class="font-medium">Clear History</span>
+                        </button>
+                        <button onclick="window.location.href='/action/settings'"
+                                class="flex items-center w-full px-3 py-2.5 text-sm text-gray-300 rounded-lg hover:bg-gray-700 transition-colors">
+                            <span class="font-medium">Settings</span>
+                        </button>
+                    </nav>
+                </div>
+            </div>
 
-    <!-- New Button to Open Modal for File Upload -->
-    <button class="button-23" id="upload-button">Upload File</button>
+            <!-- Developer info -->            
+            <div class="developed-by">
+                <p class="developed-label">Developed by</p>
+                <p class="developed-company">Mygo Consulting</p>
+                <p class="developed-partner">SAP Silver Partner</p>
+            </div>
+        </aside>
 
-    <!-- Modal Structure -->
-    <div id="uploadModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Upload File</h2>
-            <form id="fileUploadForm" method="POST" enctype="multipart/form-data">
-                <label for="file">Select a file:</label>
-                <input type="file" id="file" name="file" required><br><br>
-                <button type="submit" class="button-23">Upload</button>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Topbar/Header -->
+            <header class="topbar">
+                <span class="topbar-title">SAP Assistant</span>
+                <div class="header-controls">
+                    <span id="current-module" class="module-indicator">
+                        {% if current_module and current_module != 'home' %}
+                            {% if current_module == 'fico' %}
+                                Finance & Controlling (FI/CO)
+                            {% elif current_module == 'mm' %}
+                                Materials Management (MM)
+                            {% elif current_module == 'sd' %}
+                                Sales & Distribution (SD)
+                            {% elif current_module == 'pp' %}
+                                Production Planning (PP)
+                            {% elif current_module == 'hcm' %}
+                                Human Capital Management (HCM)
+                            {% elif current_module == 'ewm' %}
+                                Extended Warehouse Management (EWM)
+                            {% endif %}
+                        {% else %}
+                            Select a module from the sidebar
+                        {% endif %}
+                    </span>
+                    <div class="controls-separator"></div>
+                    <button id="theme-toggle" class="control-button">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" fill-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                    <a href="/logout" class="logout-button">Logout</a>
+                </div>
+            </header>
+            
+            <!-- Chat Container -->
+            <div class="chat-container" id="chat-container">
+                <!-- Messages will be inserted here -->
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-container">
+                <textarea id="user-input" class="text-input" placeholder="Ask about SAP functionality, ABAP code, or BADIs..." rows="1"></textarea>
+                <button id="upload-btn" class="action-button secondary-button">Upload File</button>
+                <button id="send-btn" class="action-button primary-button">Send</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- File Upload Modal -->
+    <div id="upload-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-lg w-96">
+            <h3 class="text-lg font-semibold mb-4">Upload Document</h3>
+            <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+                <input
+                    type="file"
+                    name="file"
+                    class="w-full p-2 mb-4 bg-gray-700 rounded"
+                    accept=".pdf,.doc,.docx,.txt"
+                >
+                <div class="flex justify-end space-x-3">
+                    <button
+                        type="button"
+                        class="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
+                        onclick="closeUploadModal()"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500"
+                    >
+                        Upload
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
-    <p>Press Enter to send, Ctrl+Enter for a new line.</p>
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="settings-modal hidden" style="z-index: 9999;">
+        <div class="settings-container">
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button type="button" class="settings-close" onclick="closeSettingsModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="settings-body">
+                <!-- Appearance Section -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">Appearance</h3>
+                    <div class="settings-option">
+                        <label class="settings-option-label" for="theme-select">Theme</label>
+                        <select id="theme-select" class="settings-select">
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                        </select>
+                    </div>
+                    <div class="settings-option">
+                        <label class="settings-option-label" for="font-size-select">Font Size</label>
+                        <select id="font-size-select" class="settings-select">
+                            <option value="small">Small</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="large">Large</option>
+                        </select>
+                    </div>
+                </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+                <!-- Chat Section -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">Chat</h3>
+                    <div class="settings-checkbox-group">
+                        <input type="checkbox" id="show-timestamps" class="settings-checkbox">
+                        <label for="show-timestamps" class="settings-checkbox-label">Show message timestamps</label>
+                    </div>
+                    <div class="settings-checkbox-group">
+                        <input type="checkbox" id="code-highlight" class="settings-checkbox" checked>
+                        <label for="code-highlight" class="settings-checkbox-label">Enable code syntax highlighting</label>
+                    </div>
+                    <div class="settings-checkbox-group">
+                        <input type="checkbox" id="auto-scroll" class="settings-checkbox" checked>
+                        <label for="auto-scroll" class="settings-checkbox-label">Auto-scroll to new messages</label>
+                    </div>
+                </div>
+
+                <!-- SAP Module Section -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">SAP Modules</h3>
+                    <div class="settings-option">
+                        <label class="settings-option-label" for="default-module-select">Default Module</label>
+                        <select id="default-module-select" class="settings-select">
+                            <option value="">None</option>
+                            <option value="FI/CO">Finance & Controlling (FI/CO)</option>
+                            <option value="MM">Materials Management (MM)</option>
+                            <option value="SD">Sales & Distribution (SD)</option>
+                            <option value="PP">Production Planning (PP)</option>
+                            <option value="HCM">Human Capital Management (HCM)</option>
+                            <option value="EWM">Extended Warehouse Management (EWM)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-footer">
+                <button type="button" class="action-button secondary-button reset-button" onclick="resetSettings()">
+                    Reset to Defaults
+                </button>
+                <button type="button" class="action-button secondary-button" onclick="closeSettingsModal()">
+                    Cancel
+                </button>
+                <button type="button" class="action-button primary-button" onclick="saveSettings()">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Module Info Modal -->
+    <div id="module-info-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-gray-800 p-6 rounded-lg w-[600px] max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="module-title" class="text-lg font-semibold text-white"></h3>
+                <button onclick="closeModuleModal()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="module-content" class="text-gray-300 space-y-4">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear History Modal -->
+    <div id="clear-history-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-white">Clear Chat History</h3>
+                    <button onclick="closeClearHistoryModal()" class="text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="mb-6">
+                    <div class="flex items-center mb-4">
+                        <svg class="w-6 h-6 text-yellow-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <p class="text-gray-300">Are you sure you want to clear the chat history?</p>
+                    </div>
+                    <p class="text-sm text-gray-400">This action cannot be undone. All chat messages will be permanently deleted.</p>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button onclick="closeClearHistoryModal()" class="px-4 py-2 bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors">
+                        Cancel
+                    </button>
+                    <button onclick="confirmClearHistory()" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Clear History
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Initialize highlight.js
+        hljs.initHighlightingOnLoad();
+
+        const messageInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-btn');
         const chatContainer = document.getElementById('chat-container');
-        const submitBtn = document.querySelector('button[type="submit"]');
-        const input = document.getElementById('input');
-        const loading = document.getElementById('loader');
-        const uploadBtn = document.getElementById('upload-button');
-        const modal = document.getElementById("uploadModal");
-        const closeBtn = document.querySelector(".close");
+        const uploadButton = document.getElementById('upload-btn');
+        const uploadModal = document.getElementById('upload-modal');
+        const uploadForm = document.getElementById('upload-form');
 
-        const addMessageToChat = (message, type) => {
-            const messageElement = document.createElement('div');
-            messageElement.setAttribute("id", "messenger");
-            messageElement.innerHTML = marked.parse(message);
-            chatContainer.appendChild(messageElement);
-            chatContainer.scrollTo(0, chatContainer.scrollHeight);
-        };
+        // Handle file upload form submission
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(uploadForm);
 
-        const sendMessage = async () => {
-            const userMessage = input.value;
-            input.value = '';
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
 
-            loading.style.display = 'block';
-            const x = document.createElement('div');
-            const z = document.createElement('div');
-            z.setAttribute('class', 'quesdiv');
-            const y = document.createElement('br');
-            x.setAttribute('class', 'answerdiv');
-            chatContainer.appendChild(z);
-            chatContainer.appendChild(x);
-            chatContainer.appendChild(y);
-            chatContainer.scrollTo(0, chatContainer.scrollHeight);
-            z.innerHTML = "Ques: " + userMessage ;
-
-            const response = await fetch("/answer", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: userMessage })
-            });
-
-            const reader = response.body.getReader();
-            let output = "";
-
-            while (true) {
-                const { done, value } = await reader.read();
-                output += new TextDecoder().decode(value);
-                loading.style.display = 'none';
-
-                x.innerHTML = marked.parse(output);
-                if (done) {
-                    return;
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Add system message to chat
+                    if (data.systemMessage) {
+                        addMessageToChat('system', data.systemMessage);
+                    }
+                    closeUploadModal();
+                    uploadForm.reset();
+                    
+                    // Focus on message input
+                    messageInput.focus();
+                    messageInput.placeholder = "Ask questions about the uploaded document...";
+                } else {
+                    addMessageToChat('system', `Error: ${data.error || 'Unknown error occurred'}`);
                 }
+            } catch (error) {
+                console.error('Error:', error);
+                addMessageToChat('system', 'Error uploading file. Please try again.');
+            }
+        });
+
+        // Handle message sending
+        let currentModule = null;
+        const moduleInfo = {
+            'FI/CO': {
+                title: 'Financial Accounting and Controlling',
+                description: 'SAP FI/CO manages financial transactions and cost accounting.',
+                components: [
+                    'General Ledger',
+                    'Accounts Payable',
+                    'Accounts Receivable',
+                    'Asset Accounting',
+                    'Cost Center Accounting',
+                    'Profit Center Accounting',
+                    'Internal Orders',
+                    'Product Costing'
+                ],
+                commonTasks: [
+                    'Financial Statements',
+                    'Bank Reconciliation',
+                    'Cost Allocation',
+                    'Period-End Closing',
+                    'Profitability Analysis'
+                ]
+            },
+            'MM': {
+                title: 'Materials Management',
+                description: 'SAP MM handles procurement and inventory management processes.',
+                components: [
+                    'Purchasing',
+                    'Inventory Management',
+                    'Material Valuation',
+                    'Invoice Verification',
+                    'Material Requirements Planning',
+                    'Vendor Management'
+                ],
+                commonTasks: [
+                    'Purchase Requisitions',
+                    'Purchase Orders',
+                    'Goods Receipt',
+                    'Stock Transfers',
+                    'Physical Inventory'
+                ]
+            },
+            'SD': {
+                title: 'Sales and Distribution',
+                description: 'SAP SD manages sales processes and customer relationships.',
+                components: [
+                    'Sales Order Processing',
+                    'Shipping',
+                    'Billing',
+                    'Credit Management',
+                    'Pricing',
+                    'Customer Service'
+                ],
+                commonTasks: [
+                    'Create Sales Orders',
+                    'Process Deliveries',
+                    'Generate Invoices',
+                    'Check Credit Limits',
+                    'Process Returns'
+                ]
+            },
+            'PP': {
+                title: 'Production Planning',
+                description: 'SAP PP handles manufacturing and production processes.',
+                components: [
+                    'Material Requirements Planning',
+                    'Capacity Planning',
+                    'Production Orders',
+                    'Shop Floor Control',
+                    'Quality Management'
+                ],
+                commonTasks: [
+                    'Create Production Orders',
+                    'Capacity Planning',
+                    'Material Requirements Planning',
+                    'Production Scheduling',
+                    'Cost Analysis'
+                ]
+            },
+            'HCM': {
+                title: 'Human Capital Management',
+                description: 'SAP HCM manages HR processes and employee data.',
+                components: [
+                    'Personnel Administration',
+                    'Organizational Management',
+                    'Time Management',
+                    'Payroll',
+                    'Training and Events'
+                ],
+                commonTasks: [
+                    'Employee Hiring',
+                    'Payroll Processing',
+                    'Leave Management',
+                    'Performance Reviews',
+                    'Training Administration'
+                ]
+            },
+            'EWM': {
+                title: 'Extended Warehouse Management',
+                description: 'SAP EWM provides advanced warehouse management capabilities.',
+                components: [
+                    'Warehouse Structure',
+                    'Inbound Processing',
+                    'Outbound Processing',
+                    'Internal Warehouse Operations',
+                    'Labor Management'
+                ],
+                commonTasks: [
+                    'Goods Receipt',
+                    'Put-away',
+                    'Picking',
+                    'Packing',
+                    'Shipping'
+                ]
             }
         };
 
-        submitBtn.addEventListener("click", async (e) => {
-            e.preventDefault();
-            await sendMessage();
-        });
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
 
-        input.addEventListener("keydown", async (e) => {
-            if (e.key === "Enter" && !e.ctrlKey) {
+            // Disable input and buttons while loading
+            messageInput.disabled = true;
+            sendButton.disabled = true;
+            uploadButton.disabled = true;
+            messageInput.classList.add('loading');
+            sendButton.classList.add('loading');
+            uploadButton.classList.add('loading');
+
+            // Add user message to chat
+            addMessageToChat('user', message);
+            messageInput.value = '';
+
+            // Add typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'message-row message-row-assistant';
+            typingIndicator.innerHTML = `
+                <div class="message-bubble message-assistant">
+                    <div class="flex items-center gap-3">
+                        <span class="typing-indicator-dots">
+                            <span></span><span></span><span></span>
+                        </span>
+                        <span class="ml-2 font-medium">Mygo Assistant is thinking...</span>
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(typingIndicator);
+            scrollToBottom();
+
+            try {
+                const response = await fetch(`/api/module/{{ current_module }}/answer`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message }),
+                });
+
+                // Remove typing indicator
+                typingIndicator.remove();
+
+                const reader = response.body.getReader();
+                let assistantMessage = '';
+                const messageElement = addMessageToChat('assistant', '');
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const text = new TextDecoder().decode(value);
+                    assistantMessage += text;
+                    messageElement.innerHTML = formatMessage(assistantMessage);
+                    highlightCode();
+                    scrollToBottom();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                addMessageToChat('system', 'Error: Could not get response from assistant');
+                typingIndicator.remove();
+            } finally {
+                // Re-enable input and buttons
+                messageInput.disabled = false;
+                sendButton.disabled = false;
+                uploadButton.disabled = false;
+                messageInput.classList.remove('loading');
+                sendButton.classList.remove('loading');
+                uploadButton.classList.remove('loading');
+                messageInput.focus();
+            }
+        }
+
+        // Show/hide loader (typing indicator) as a chat bubble
+        function showTypingIndicator(show) {
+            // Remove any existing loader bubble
+            const chatContainer = document.getElementById('chat-container');
+            const oldLoader = document.getElementById('typing-indicator-bubble');
+            if (oldLoader) oldLoader.remove();
+            if (show) {
+                const loaderDiv = document.createElement('div');
+                loaderDiv.id = 'typing-indicator-bubble';
+                loaderDiv.className = 'message-row message-row-assistant';
+                loaderDiv.innerHTML = `
+                    <div class="message-bubble message-assistant">
+                        <div class="flex items-center gap-3">
+                            <span class="typing-indicator-dots">
+                                <span></span><span></span><span></span>
+                            </span>
+                            <span class="ml-2 font-medium">Mygo Assistant is thinking...</span>
+                        </div>
+                    </div>
+                `;
+                chatContainer.appendChild(loaderDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+
+        // Add message to chat container
+        function addMessageToChat(role, content) {
+            const messageDiv = document.createElement('div');
+            
+            // Create message row with proper styling
+            if (role === 'user') {
+                messageDiv.className = 'message-row message-row-user';
+                
+                // Create message bubble
+                const messageBubble = document.createElement('div');
+                messageBubble.className = 'message-bubble message-user';
+                
+                // Create message content
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                messageContent.innerHTML = formatMessage(content);
+                
+                messageBubble.appendChild(messageContent);
+                messageDiv.appendChild(messageBubble);
+            } 
+            else if (role === 'assistant') {
+                messageDiv.className = 'message-row message-row-assistant';
+                
+                // Create message bubble
+                const messageBubble = document.createElement('div');
+                messageBubble.className = 'message-bubble message-assistant';
+                
+                // Create message content
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                messageContent.innerHTML = formatMessage(content);
+                
+                messageBubble.appendChild(messageContent);
+                messageDiv.appendChild(messageBubble);
+            } 
+            else if (role === 'system') {
+                messageDiv.className = 'message-row message-row-system';
+                
+                // Create message bubble
+                const messageBubble = document.createElement('div');
+                messageBubble.className = 'message-system';
+                messageBubble.innerHTML = formatMessage(content);
+                
+                messageDiv.appendChild(messageBubble);
+            }
+            
+            chatContainer.appendChild(messageDiv);
+            scrollToBottom();
+            return messageDiv;
+        }
+
+        // Format message with enhanced code blocks
+        function formatMessage(content) {
+            if (!content) return '';
+            
+            // First process code blocks
+            let formattedContent = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
+                const lines = code.trim().split('\n');
+                const lineNumbers = lines.map((_, i) => i + 1).join('\n');
+                return `
+                    <div class="code-block animate-fade-in">
+                        <div class="code-block-header">
+                            <span class="code-type-label">${language ? language.toUpperCase() : 'CODE'}</span>
+                            <div class="code-actions">
+                                <button class="code-action-button" onclick="copyCode(this)" title="Copy code">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                </button>
+                                <button class="code-action-button" onclick="expandCode(this)" title="Expand code block">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="code-block-content flex">
+                            <div class="line-numbers">${lineNumbers}</div>
+                            <pre><code class="language-${language || 'abap'}">${code}</code></pre>
+                        </div>
+                        <div class="code-block-footer">
+                            <div class="text-xs text-gray-500">Press Ctrl+C (Cmd+C on Mac) to copy</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Then process regular text (convert newlines to <p> tags, etc)
+            formattedContent = formattedContent.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+            
+            // Wrap in paragraph tags if not already starting with a tag
+            if (!formattedContent.trim().startsWith('<')) {
+                formattedContent = '<p>' + formattedContent + '</p>';
+            }
+            
+            return formattedContent;
+        }
+
+        // Copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                // Show success state
+                button.innerHTML = `
+                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                `;
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    button.innerHTML = `
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                    `;
+                }, 2000);
+
+                // Show notification
+                showNotification('Code copied to clipboard', 'success');
+            }).catch(() => {
+                showNotification('Failed to copy code', 'error');
+            });
+        }
+
+        // Expand code block
+        function expandCode(button) {
+            const codeBlock = button.closest('.code-block');
+            codeBlock.classList.toggle('fixed');
+            codeBlock.classList.toggle('inset-4');
+            codeBlock.classList.toggle('z-50');
+            codeBlock.querySelector('.code-block-content').classList.toggle('max-h-[80vh]');
+            
+            // Update button icon
+            if (codeBlock.classList.contains('fixed')) {
+                button.innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                `;
+            } else {
+                button.innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                    </svg>
+                `;
+            }
+        }
+
+        // Highlight code blocks
+        function highlightCode() {
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+            });
+        }
+
+        // Scroll chat to bottom
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Event listeners
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                await sendMessage();
+                sendMessage();
             }
         });
 
-        input.addEventListener("focus", () => {
-            input.style.border = "2px solid #007bff";
+        sendButton.addEventListener('click', sendMessage);
+
+        uploadButton.addEventListener('click', () => {
+            uploadModal.classList.remove('hidden');
         });
 
-        input.addEventListener("blur", () => {
-            input.style.border = "2px solid transparent";
+        function closeUploadModal() {
+            uploadModal.classList.add('hidden');
+        }
+
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
         });
 
-        // Modal Logic
-        uploadBtn.onclick = async function() {
-            // Handle login before showing modal
-            const loginResponse = await fetch("/login_required", {
-                method: "POST"
+        // Quick Actions Functions
+        function handleNewChat() {
+            // Clear chat container
+            chatContainer.innerHTML = '';
+            
+            // Reset module selection
+            document.querySelectorAll('[href^="/module/"]').forEach(link => {
+                link.classList.remove('bg-blue-600', 'text-white');
+                link.classList.add('text-gray-300');
             });
+            
+            // Reset module header text
+            document.getElementById('current-module').textContent = 'Select a module from the sidebar';
+            
+            // Update URL without module parameter
+            history.pushState({}, '', '/');
+            
+            // Add welcome message
+            addMessageToChat('assistant', 'Starting a new chat. Please select a module from the sidebar to begin.');
+            
+            // Clear input
+            messageInput.value = '';
+            messageInput.focus();
+            
+            // Show notification
+            showNotification('Started new chat session', 'success');
+        }
 
-            if (loginResponse.ok) {
-                modal.style.display = "block";
-            } else {
-                alert("Please login to upload a file.");
-                window.location.href = "/login";  // Redirect to login page
+        function showClearHistoryModal() {
+            const modal = document.getElementById('clear-history-modal');
+            modal.classList.remove('hidden');
+        }
+
+        async function confirmClearHistory() {
+            try {
+                const response = await fetch('/clear_history', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Clear chat container
+                    chatContainer.innerHTML = '';
+                    
+                    // Reset module selection
+                    document.querySelectorAll('[href^="/module/"]').forEach(link => {
+                        link.classList.remove('bg-blue-600', 'text-white');
+                        link.classList.add('text-gray-300');
+                    });
+                    
+                    // Reset module header text
+                    document.getElementById('current-module').textContent = 'Select a module from the sidebar';
+                    
+                    // Update URL without module parameter
+                    history.pushState({}, '', '/');
+                    
+                    // Add welcome message
+                    addMessageToChat('assistant', 'Chat history has been cleared. Please select a module from the sidebar to begin.');
+                    
+                    // Close modal
+                    closeClearHistoryModal();
+                    
+                    // Show success notification
+                    showNotification('Chat history cleared successfully', 'success');
+                } else {
+                    showNotification('Error clearing chat history', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error clearing chat history', 'error');
             }
-        };
+        }
 
-        closeBtn.onclick = function() {
-            modal.style.display = "none";
-        };
+        function closeClearHistoryModal() {
+            document.getElementById('clear-history-modal').classList.add('hidden');
+        }
 
-        window.onclick = function(event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        };
-
-        // File Upload Logic
-        const fileUploadForm = document.getElementById('fileUploadForm');
-        fileUploadForm.addEventListener('submit', async (e) => {
+        // Settings Modal
+        const settingsModal = document.getElementById('settings-modal');
+        
+        // Add event listener to settings button
+        document.getElementById('settings-btn').addEventListener('click', (e) => {
             e.preventDefault();
-            const formData = new FormData(fileUploadForm);
+            // Explicitly show the settings modal
+            console.log('Opening settings modal');
+            settingsModal.classList.remove('hidden');
+        });
 
-            const response = await fetch("/upload_ops", {
-                method: "POST",
-                body: formData
-            });
+        // Close settings modal when clicking outside
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                closeSettingsModal();
+            }
+        });
+        
+        // Make sure ESC key closes the modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !settingsModal.classList.contains('hidden')) {
+                closeSettingsModal();
+            }
+        });
 
-            if (response.ok) {
-                alert('File uploaded successfully!');
-                modal.style.display = 'none';
+        // Function to close settings modal
+        function closeSettingsModal() {
+            console.log('Closing settings modal');
+            settingsModal.classList.add('hidden');
+        }
+
+        // Save settings
+        // Reset settings to default values
+        function resetSettings() {
+            // Default values
+            document.getElementById('theme-select').value = 'dark';
+            document.getElementById('font-size-select').value = 'medium';
+            document.getElementById('show-timestamps').checked = false;
+            document.getElementById('code-highlight').checked = true;
+            document.getElementById('auto-scroll').checked = true;
+            document.getElementById('default-module-select').value = '';
+            
+            // Show confirmation
+            showNotification('Settings reset to defaults', 'info');
+        }
+        
+        // Save all settings
+        async function saveSettings() {
+            // Get all settings values
+            const theme = document.getElementById('theme-select').value;
+            const fontSize = document.getElementById('font-size-select').value;
+            const showTimestamps = document.getElementById('show-timestamps').checked;
+            const codeHighlight = document.getElementById('code-highlight').checked;
+            const autoScroll = document.getElementById('auto-scroll').checked;
+            const defaultModule = document.getElementById('default-module-select').value;
+            
+            // Create settings object
+            const settings = {
+                theme,
+                fontSize,
+                showTimestamps,
+                codeHighlight,
+                autoScroll,
+                defaultModule
+            };
+            
+            // Apply theme
+            applyTheme(theme);
+            
+            // Apply font size
+            applyFontSize(fontSize);
+            
+            // Apply code highlighting setting
+            if (!codeHighlight) {
+                document.querySelectorAll('.code-block').forEach(block => {
+                    block.classList.add('no-highlight');
+                });
             } else {
-                alert('Error uploading file.');
+                document.querySelectorAll('.code-block').forEach(block => {
+                    block.classList.remove('no-highlight');
+                    highlightCode();
+                });
+            }
+            
+            // Save all settings to localStorage for immediate use
+            localStorage.setItem('theme', theme);
+            localStorage.setItem('fontSize', fontSize);
+            localStorage.setItem('showTimestamps', showTimestamps);
+            localStorage.setItem('codeHighlight', codeHighlight);
+            localStorage.setItem('autoScroll', autoScroll);
+            localStorage.setItem('defaultModule', defaultModule);
+            
+            try {
+                // Also save settings to server for persistence across devices
+                const response = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(settings)
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Show confirmation and close modal
+                    showNotification('Settings saved successfully', 'success');
+                    closeSettingsModal();
+                    
+                    // If a default module is set and we're not already in a module, select it
+                    if (defaultModule && !currentModule) {
+                        selectModule(defaultModule);
+                    }
+                } else {
+                    showNotification('Error saving settings to server', 'error');
+                }
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showNotification('Settings saved locally only', 'info');
+                closeSettingsModal();
+            }
+        }
+        
+        // Apply theme setting
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('theme-toggle').innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                `;
+            } else {
+                document.body.classList.remove('light-theme');
+                document.getElementById('theme-toggle').innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                `;
+            }
+        }
+        
+        // Apply font size setting
+        function applyFontSize(size) {
+            // Remove any existing font size classes
+            document.body.classList.remove('font-size-small', 'font-size-medium', 'font-size-large');
+            
+            // Add the selected font size class
+            document.body.classList.add(`font-size-${size}`);
+        }
+        
+        // Show notification toast
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg text-white transform transition-all duration-300 ease-in-out z-50 ${
+                type === 'success' ? 'bg-green-600' : type === 'info' ? 'bg-blue-600' : 'bg-red-600'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.add('translate-y-0', 'opacity-100');
+            }, 10);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+        
+        // Load saved settings on startup
+        async function loadSettings() {
+            let serverSettings = null;
+            
+            // Try to get settings from server first
+            try {
+                const response = await fetch('/api/settings');
+                if (response.ok) {
+                    serverSettings = await response.json();
+                    console.log('Loaded settings from server:', serverSettings);
+                }
+            } catch (error) {
+                console.warn('Could not load settings from server:', error);
+                // Continue with local settings if server fails
+            }
+            
+            // Fall back to localStorage if server settings aren't available
+            // or merge server settings with local settings (server takes precedence)
+            
+            // Load theme
+            const savedTheme = serverSettings?.theme || localStorage.getItem('theme') || 'dark';
+            document.getElementById('theme-select').value = savedTheme;
+            applyTheme(savedTheme);
+            
+            // Load font size
+            const savedFontSize = serverSettings?.fontSize || localStorage.getItem('fontSize') || 'medium';
+            document.getElementById('font-size-select').value = savedFontSize;
+            applyFontSize(savedFontSize);
+            
+            // Load checkboxes
+            const showTimestamps = serverSettings?.showTimestamps !== undefined 
+                ? serverSettings.showTimestamps 
+                : localStorage.getItem('showTimestamps') === 'true';
+            document.getElementById('show-timestamps').checked = showTimestamps;
+            
+            const codeHighlight = serverSettings?.codeHighlight !== undefined 
+                ? serverSettings.codeHighlight 
+                : localStorage.getItem('codeHighlight') !== 'false'; // Default to true
+            document.getElementById('code-highlight').checked = codeHighlight;
+            
+            // Apply code highlighting setting immediately
+            if (!codeHighlight) {
+                document.querySelectorAll('.code-block').forEach(block => {
+                    block.classList.add('no-highlight');
+                });
+            }
+            
+            const autoScroll = serverSettings?.autoScroll !== undefined 
+                ? serverSettings.autoScroll 
+                : localStorage.getItem('autoScroll') !== 'false'; // Default to true
+            document.getElementById('auto-scroll').checked = autoScroll;
+            
+            // Load default module
+            const defaultModule = serverSettings?.defaultModule || localStorage.getItem('defaultModule') || '';
+            document.getElementById('default-module-select').value = defaultModule;
+            
+            // If we're on the home page and a default module is set, navigate to it
+            if (defaultModule && window.location.pathname === '/' && !currentModule) {
+                // Use a small delay to ensure the UI is fully loaded
+                setTimeout(() => {
+                    selectModule(defaultModule);
+                }, 100);
+            }
+        }
+        
+        // SAP Module functionality
+        function selectModule(moduleName) {
+            currentModule = moduleName;
+            
+            // Update UI to show selected module
+            document.querySelectorAll('[onclick^="selectModule"]').forEach(btn => {
+                btn.classList.remove('bg-blue-600');
+                if (btn.textContent.includes(moduleName)) {
+                    btn.classList.add('bg-blue-600');
+                }
+            });
+            
+            // Update header to show current module
+            document.getElementById('current-module').textContent = `Current Module: ${moduleName}`;
+            
+            // Show module info modal
+            showModuleInfo(moduleName);
+            
+            // Update chat context
+            addMessageToChat('system', `Switched to ${moduleName} context. You can now ask questions specific to ${moduleInfo[moduleName].title}.`);
+            
+            // Update input placeholder
+            messageInput.placeholder = `Ask about ${moduleName} functionality...`;
+            
+            // Store selected module in localStorage
+            localStorage.setItem('selectedModule', moduleName);
+        }
+
+        function showModuleInfo(moduleName) {
+            const modal = document.getElementById('module-info-modal');
+            const title = document.getElementById('module-title');
+            const content = document.getElementById('module-content');
+            const info = moduleInfo[moduleName];
+
+            title.textContent = info.title;
+            content.innerHTML = `
+                <p class="text-lg">${info.description}</p>
+                
+                <div class="mt-6">
+                    <h4 class="text-white font-semibold mb-2">Key Components</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        ${info.components.map(comp => `<li>${comp}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-white font-semibold mb-2">Common Tasks</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        ${info.commonTasks.map(task => `<li>${task}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="mt-6 bg-gray-700 p-4 rounded-lg">
+                    <h4 class="text-white font-semibold mb-2">Try asking about:</h4>
+                    <ul class="space-y-2">
+                        <li>• How to perform ${info.commonTasks[0].toLowerCase()}?</li>
+                        <li>• What are the best practices for ${info.components[0].toLowerCase()}?</li>
+                        <li>• Common issues in ${info.components[1].toLowerCase()}</li>
+                    </ul>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModuleModal() {
+            document.getElementById('module-info-modal').classList.add('hidden');
+        }
+
+        // Load all settings and previously selected module on startup
+        window.addEventListener('DOMContentLoaded', () => {
+            // Load all user settings
+            loadSettings();
+            
+            // Load previously selected module
+            const savedModule = localStorage.getItem('selectedModule');
+            if (savedModule && moduleInfo[savedModule]) {
+                selectModule(savedModule);
+            }
+            
+            // Handle displaying settings modal based on server data
+            try {
+                if (document.getElementById('server-data')) {
+                    const serverData = JSON.parse(document.getElementById('server-data').textContent);
+                    console.log('Server data:', serverData);
+                    
+                    // Only show settings if explicitly requested (should be false by default)
+                    const showSettings = serverData.showSettings === true; // Strict check
+                    
+                    if (showSettings) {
+                        console.log('Settings should be shown based on server data');
+                        setTimeout(() => settingsModal.classList.remove('hidden'), 100);
+                    } else {
+                        console.log('Settings should remain hidden');
+                        settingsModal.classList.add('hidden');
+                    }
+                }
+            } catch (error) {
+                console.error('Error parsing server data:', error);
+                // Ensure settings modal is hidden by default if there's an error
+                settingsModal.classList.add('hidden');
+            }
+        });
+
+        // Close module modal when clicking outside
+        document.getElementById('module-info-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('module-info-modal')) {
+                closeModuleModal();
+            }
+        });
+
+        // Notification function
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg text-white transform transition-all duration-300 ease-in-out z-50 ${
+                type === 'success' ? 'bg-green-600' : 'bg-red-600'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.add('translate-y-0', 'opacity-100');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Add keyboard support for modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeClearHistoryModal();
+            }
+        });
+
+        // Load conversation history on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch(`/api/module/{{ current_module }}/history`);
+                const data = await response.json();
+                
+                if (data.history && data.history.length > 0) {
+                    data.history.forEach(msg => {
+                        addMessageToChat(msg.role, msg.content);
+                    });
+                    scrollToBottom();
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                showNotification('Error loading chat history', 'error');
+            }
+        });
+
+        // Module selection handler
+        document.querySelectorAll('[href^="/module/"]').forEach(moduleLink => {
+            moduleLink.addEventListener('click', (e) => {
+                // Remove active state from all modules
+                document.querySelectorAll('[href^="/module/"]').forEach(link => {
+                    link.classList.remove('bg-blue-600', 'text-white');
+                    link.classList.add('text-gray-300');
+                });
+                
+                // Add active state to selected module
+                e.currentTarget.classList.remove('text-gray-300');
+                e.currentTarget.classList.add('bg-blue-600', 'text-white');
+                
+                // Update header with module name
+                const moduleTitle = e.currentTarget.querySelector('.font-medium').textContent;
+                const moduleDesc = e.currentTarget.querySelector('.opacity-75').textContent;
+                document.getElementById('current-module').textContent = `${moduleDesc} (${moduleTitle})`;
+                
+                // Store selected module
+                localStorage.setItem('selectedModule', moduleTitle);
+            });
+        });
+
+        // Load saved module selection on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedModule = localStorage.getItem('selectedModule');
+            if (!savedModule) {
+                document.getElementById('current-module').textContent = 'Select a module from the sidebar';
             }
         });
     </script>

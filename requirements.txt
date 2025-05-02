@@ -1,3 +1,19 @@
-boto3
-flask
-openai
+# Core dependencies
+flask==3.0.2
+openai==1.12.0
+boto3==1.34.51
+werkzeug==3.0.1
+python-dotenv==1.0.1
+requests==2.31.0
+gunicorn==21.2.0
+
+# SAP Assistant optimization dependencies
+nltk==3.8.1
+PyPDF2==3.0.1
+python-docx==1.1.0  # Use python-docx instead of docx which is deprecated
+python-dateutil==2.8.2
+
+# User interface dependencies
+Markdown==3.5
+jinja2==3.1.3
+itsdangerous==2.1.2

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Mygo SAP Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="max-w-4xl mx-auto p-6">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-2xl font-semibold">Settings</h1>
+            <a href="javascript:history.back()" class="text-sm text-gray-400 hover:text-white transition-colors">
+                ← Back to Chat
+            </a>
+        </div>
+
+        <div class="space-y-8">
+            <!-- Appearance Settings -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-lg font-medium mb-4">Appearance</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="theme" class="block text-sm font-medium text-gray-400 mb-2">Theme</label>
+                        <select id="theme" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-sm">
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="font-size" class="block text-sm font-medium text-gray-400 mb-2">Font Size</label>
+                        <select id="font-size" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-sm">
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Settings -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-lg font-medium mb-4">Chat</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" id="show-timestamps" class="rounded bg-gray-700 border-gray-600 text-blue-600">
+                            <span class="text-sm">Show message timestamps</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="flex items-center space-x-3">
+                            <input type="checkbox" id="code-highlighting" class="rounded bg-gray-700 border-gray-600 text-blue-600" checked>
+                            <span class="text-sm">Enable code syntax highlighting</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module Settings -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h2 class="text-lg font-medium mb-4">Module Preferences</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="default-module" class="block text-sm font-medium text-gray-400 mb-2">Default Module</label>
+                        <select id="default-module" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-sm">
+                            <option value="fico">FI/CO - Finance & Controlling</option>
+                            <option value="mm">MM - Materials Management</option>
+                            <option value="sd">SD - Sales & Distribution</option>
+                            <option value="pp">PP - Production Planning</option>
+                            <option value="hcm">HCM - Human Capital Management</option>
+                            <option value="ewm">EWM - Extended Warehouse Management</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="flex justify-end">
+                <button id="save-settings" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load saved settings
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const savedFontSize = localStorage.getItem('fontSize') || 'medium';
+            const savedDefaultModule = localStorage.getItem('defaultModule') || 'fico';
+            const showTimestamps = localStorage.getItem('showTimestamps') === 'true';
+            const codeHighlighting = localStorage.getItem('codeHighlighting') !== 'false';
+
+            document.getElementById('theme').value = savedTheme;
+            document.getElementById('font-size').value = savedFontSize;
+            document.getElementById('default-module').value = savedDefaultModule;
+            document.getElementById('show-timestamps').checked = showTimestamps;
+            document.getElementById('code-highlighting').checked = codeHighlighting;
+        });
+
+        // Save settings
+        document.getElementById('save-settings').addEventListener('click', () => {
+            const theme = document.getElementById('theme').value;
+            const fontSize = document.getElementById('font-size').value;
+            const defaultModule = document.getElementById('default-module').value;
+            const showTimestamps = document.getElementById('show-timestamps').checked;
+            const codeHighlighting = document.getElementById('code-highlighting').checked;
+
+            localStorage.setItem('theme', theme);
+            localStorage.setItem('fontSize', fontSize);
+            localStorage.setItem('defaultModule', defaultModule);
+            localStorage.setItem('showTimestamps', showTimestamps);
+            localStorage.setItem('codeHighlighting', codeHighlighting);
+
+            // Show success message
+            alert('Settings saved successfully!');
+            
+            // Apply some settings immediately
+            document.body.classList.toggle('light-theme', theme === 'light');
+            document.body.style.fontSize = fontSize === 'small' ? '14px' : fontSize === 'large' ? '16px' : '15px';
+        });
+    </script>
+</body>
+</html> 

@@ -1,310 +1,421 @@
 import boto3
 import subprocess
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
-
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash, send_from_directory
 from openai import OpenAI
 import logging
 import traceback
 import time
 import os
 from collections import deque
+import json
+from werkzeug.utils import secure_filename
+import re
 
+# Import centralized configuration
+from config import *
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+# Initialize OpenAI client
+client = OpenAI(api_key=OPENAI_API_KEY)
 
-client=OpenAI(api_key = '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')
-app = Flask(__name__)
-app.secret_key = 'key_key_key_key_key'
+# Custom system message for the assistant
+SYSTEM_MESSAGE = """You are an advanced SAP Assistant created by Mygo Consulting, developed by Vishnu Yeruva. 
+You specialize in SAP systems, particularly in modules like FI/CO, MM, SD, PP, HCM, and EWM.
 
-# Directory for uploaded files
+Key Capabilities:
+1. Deep understanding of SAP modules and their interconnections
+2. Expert knowledge of ABAP programming and SAP customization
+3. Familiarity with Mygo Consulting's best practices and implementation methodologies
+4. Ability to provide practical solutions based on real-world SAP implementation experience
+
+When responding:
+- Prioritize Mygo Consulting's best practices and implementation approaches
+- Provide specific ABAP code examples when relevant
+- Reference SAP Notes and official documentation when applicable
+- Consider system performance and security implications
+- Suggest optimizations based on Mygo's experience
+
+About Mygo Consulting:
+- SAP Silver Partner
+- Specializes in SAP implementations and support
+- Strong focus on customer satisfaction and quality delivery
+- Expertise in various industries including manufacturing, retail, and healthcare
+
+Developer Information:
+- Created by: Vishnu Yeruva
+- Role: SAP Technical Consultant
+- Expertise: Python, Machine Learning, ABAP, Fiori, UI5, BTP
+
+Remember to maintain a professional yet approachable tone, and always prioritize SAP best practices while incorporating Mygo Consulting's expertise."""
+
+# SAP-specific knowledge base
+SAP_KNOWLEDGE = {
+    'FI/CO': {
+        'best_practices': [
+            'Always use document splitting for parallel accounting',
+            'Implement proper authorization controls for financial transactions',
+            'Use standard reconciliation accounts for vendors and customers',
+            'Follow period-end closing best practices',
+            'Implement proper audit trails for financial transactions'
+        ],
+        'common_issues': [
+            'Reconciliation differences in GL accounts',
+            'Period-end closing performance',
+            'Payment program configuration',
+            'Foreign currency valuation',
+            'Cost allocation issues'
+        ],
+        'custom_solutions': [
+            'Automated reconciliation reports',
+            'Enhanced payment proposal program',
+            'Custom financial statements',
+            'Profit center reporting',
+            'Cost center allocation tools'
+        ]
+    },
+    'MM': {
+        'best_practices': [
+            'Implement proper material master data governance',
+            'Use MRP profiles effectively',
+            'Configure proper batch management',
+            'Implement proper inventory management procedures',
+            'Use proper valuation methods'
+        ],
+        'common_issues': [
+            'Material master data inconsistencies',
+            'MRP performance issues',
+            'Goods receipt/invoice receipt clearing',
+            'Inventory differences',
+            'Batch determination problems'
+        ],
+        'custom_solutions': [
+            'Enhanced goods receipt process',
+            'Custom MRP reports',
+            'Automated stock transfer solutions',
+            'Vendor evaluation tools',
+            'Material master data maintenance tools'
+        ]
+    },
+    'SD': {
+        'best_practices': [
+            'Implement proper pricing procedures',
+            'Use delivery due list monitoring',
+            'Configure credit management properly',
+            'Implement proper output management',
+            'Use proper billing schedules'
+        ],
+        'common_issues': [
+            'Pricing determination issues',
+            'Delivery processing performance',
+            'Credit blocks',
+            'Output determination problems',
+            'Billing document creation issues'
+        ],
+        'custom_solutions': [
+            'Enhanced pricing calculations',
+            'Custom delivery monitoring',
+            'Automated credit check process',
+            'Custom billing solutions',
+            'Order processing automation'
+        ]
+    }
+}
+
+app = Flask(__name__, static_folder='static')
+app.secret_key = 'your_secret_key'  # Replace with your secret key
+
+# Constants
 UPLOAD_FOLDER = 'uploads'
-HISTORY_FILE = 'conversation_history.txt'
-CONVERSATION_LENGTH = 5  # Number of messages to keep in history
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+STATIC_FOLDER = 'static'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc', 'docx'}
+ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'svg'}
+MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
+CONVERSATION_LENGTH = 10
+ASSISTANT_ID = "asst_D8x26bB9HstXP5EaqiI5ejaX"  # Your assistant ID
 
+# Configure app
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
+
+# Create required folders
+for folder in [UPLOAD_FOLDER, STATIC_FOLDER]:
+    if not os.path.exists(folder):
+        os.makedirs(folder)
 
 # Initialize conversation history
-conversation_history = deque(maxlen=CONVERSATION_LENGTH)
+conversation_history = {}  # Changed to dict to store per-module history
+
+def get_module_conversation(module):
+    """Get or create conversation history for a specific module"""
+    if module not in conversation_history:
+        conversation_history[module] = deque(maxlen=CONVERSATION_LENGTH)
+    return conversation_history[module]
+
+def allowed_file(filename):
+    """Check if file extension is allowed"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def save_conversation_to_file(history, filename):
-    """Save the conversation history to a file."""
-    with open(filename, 'w') as file:
-        for message in history:
-            file.write(f"{message['role']}: {message['content']}\n")
+    """Save the conversation history to a file"""
+    try:
+        with open(filename, 'w') as file:
+            for message in history:
+                file.write(json.dumps(message) + '\n')
+    except Exception as e:
+        logger.error(f"Error saving conversation: {e}")
 
 def load_conversation_from_file(filename):
-    """Load the conversation history from a file."""
-    if os.path.exists(filename):
-        with open(filename, 'r') as file:
-            lines = file.readlines()
-        return [line.strip() for line in lines]
-    return []
-# User storage (for demonstration)
-users = {
-    'admin': 'password123',
-    'user1': 'mypassword'
-}
-assistant_id="asst_D8x26bB9HstXP5EaqiI5ejaX"
+    """Load the conversation history from a file"""
+    try:
+        if os.path.exists(filename):
+            history = deque(maxlen=CONVERSATION_LENGTH)
+            with open(filename, 'r') as file:
+                for line in file:
+                    history.append(json.loads(line.strip()))
+            return history
+        return deque(maxlen=CONVERSATION_LENGTH)
+    except Exception as e:
+        logger.error(f"Error loading conversation: {e}")
+        return deque(maxlen=CONVERSATION_LENGTH)
+
+def extract_code_blocks(text):
+    """Extract ABAP code blocks from text"""
+    code_blocks = []
+    pattern = r'```(?:abap)?\n(.*?)\n```'
+    matches = re.finditer(pattern, text, re.DOTALL)
+    for match in matches:
+        code_blocks.append(match.group(1).strip())
+    return code_blocks
+
+def analyze_sap_document(file_path):
+    """Analyze uploaded SAP document for context"""
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+            return content
+    except Exception as e:
+        logger.error(f"Error analyzing document: {e}")
+        return None
+
+def get_module_context(module):
+    """Get specific context for a SAP module"""
+    if module in SAP_KNOWLEDGE:
+        return SAP_KNOWLEDGE[module]
+    return None
+
 @app.route('/')
 def index():
-    return render_template('index.html')
-@app.route("/answer", methods=["GET", "POST"])
-def answer():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return redirect(url_for('module', module_name='home'))
+
+@app.route('/module/<module_name>')
+def module(module_name):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    # Validate module name
+    valid_modules = ['home', 'fico', 'mm', 'sd', 'pp', 'hcm', 'ewm']
+    if module_name.lower() not in valid_modules:
+        return redirect(url_for('module', module_name='home'))
+    
+    return render_template('index.html', 
+                         current_module=module_name,
+                         conversation_history=get_module_conversation(module_name))
+
+@app.route('/action/<action_name>')
+def action(action_name):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    if action_name == 'new_chat':
+        module = request.args.get('module', 'home')
+        if module in conversation_history:
+            conversation_history[module].clear()
+        return redirect(url_for('module', module_name=module))
+    
+    elif action_name == 'settings':
+        return render_template('settings.html')
+    
+    return redirect(url_for('index'))
+
+@app.route('/api/module/<module_name>/history')
+def get_module_history(module_name):
+    if 'username' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    history = list(get_module_conversation(module_name))
+    return jsonify({'history': history})
+
+@app.route('/api/module/<module_name>/clear', methods=['POST'])
+def clear_module_history(module_name):
+    if 'username' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    if module_name in conversation_history:
+        conversation_history[module_name].clear()
+        return jsonify({'success': True})
+    return jsonify({'error': 'Module not found'}), 404
+
+@app.route("/api/module/<module_name>/answer", methods=["POST"])
+def module_answer(module_name):
+    if 'username' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    try:
         data = request.get_json()
         message = data["message"]
-        conversation_history.append({'role': 'user', 'content': message})
-        save_conversation_to_file(conversation_history, HISTORY_FILE)
-
-        # Prepare system prompt with the last N messages
-        system_prompt = "\n".join(
-            [f"{entry['role']}: {entry['content']}" for entry in conversation_history]
-        )
-        def generate():
-          try:  
-            thread = client.beta.threads.create()
-            thread_message = client.beta.threads.messages.create(
-                thread_id=thread.id,
-                role="user",
-                content=system_prompt  # Send the conversation history as the system prompt
-            )
-            thread_message = client.beta.threads.messages.create(
-                thread_id=thread.id,
-                role="user",
-                content=message
-            )
-
-            stream=client.beta.threads.runs.create(thread_id=thread.id, assistant_id=assistant_id, timeout=60,stream=True,max_completion_tokens=2000)
-            final_text=""
-            
-
         
-            for event in stream:
-                print(event.data.object)
+        # Get module-specific conversation history
+        module_conversation = get_module_conversation(module_name)
+        
+        # Add message to conversation history
+        module_conversation.append({'role': 'user', 'content': message})
+
+        def generate():
+            try:
+                # Create thread with module context
+                thread = client.beta.threads.create()
                 
-                if(event.data.object=="thread.run.step.delta"):
-                   print(event.data.delta) 
-                if(event.data.object=="thread.message.delta"):
-                    for content in event.data.delta.content:
-                        
-                        if(content.type=="text"):
-                            final_text=final_text+content.text.value
-                            """if(final_text==""):
-                                print("EMPTY")
-                            else:
-                                print(final_text) """   
-                            yield(content.text.value)
-                            
-          except Exception as e:
-            raise e                  
-        def generate_after_change():
-            
-                            my_assistants = client.beta.assistants.list(
-                                                                order="desc",
-                                                                limit="20",
-                                                            )
-                            for x in my_assistants:
+                # Add conversation history
+                for msg in module_conversation:
+                    client.beta.threads.messages.create(
+                        thread_id=thread.id,
+                        role=msg['role'],
+                        content=msg['content']
+                    )
 
-                                if( x.id==assistant_id and x.model=="gpt-4-turbo"):
-                                    new_model="gpt-4o"
-                                else:
-                                    new_model="gpt-4-turbo"
-                            try:
-                                client.beta.assistants.update(
-                                assistant_id,
-                                tools=[{"type":"file_search"},{"type":"code_interpreter"}],
+                # Create run with streaming
+                stream = client.beta.threads.runs.create(
+                    thread_id=thread.id,
+                    assistant_id=ASSISTANT_ID,
+                    timeout=60,
+                    stream=True
+                )
 
+                # Process stream
+                assistant_response = ""
+                for event in stream:
+                    if event.data.object == "thread.message.delta":
+                        for content in event.data.delta.content:
+                            if content.type == "text":
+                                assistant_response += content.text.value
+                                yield content.text.value
 
-                                model=new_model
-                                )
-                                print("MODEL SWITCHED",new_model)
-                                thread = client.beta.threads.create()
-                                thread_message = client.beta.threads.messages.create(
-                                    thread_id=thread.id,
-                                    role="user",
-                                    content=message,
-                                )
+                # Save assistant's response to history
+                module_conversation.append({
+                    'role': 'assistant',
+                    'content': assistant_response
+                })
 
-                                stream=client.beta.threads.runs.create(thread_id=thread.id, assistant_id=assistant_id, timeout=60,stream=True)
-                                final_text=""
-                                for event in stream:
-                                    
-                                    if(event.data.object=="thread.message.delta"):
-                                        for content in event.data.delta.content:
-                                            if(content.type=="text"):
-                                                final_text=final_text+content.text.value
-                                                """if(final_text==""):
-                                                    print("EMPTY")
-                                                else:
-                                                    print(final_text) """   
-                                                yield(content.text.value) 
-                                                    
-                            except Exception as e:
-                                                    return(e)     
-                               
-                            
-        try:
-            return generate(), {"Content-Type": "text/plain"}
-        except:
-             return generate_after_change(), {"Content-Type": "text/plain"}
-@app.route('/login', methods=['POST','GET'])
+            except Exception as e:
+                logger.error(f"Error in generate: {e}")
+                yield f"Error: {str(e)}"
+
+        return app.response_class(generate(), mimetype='text/plain')
+
+    except Exception as e:
+        logger.error(f"Error in answer: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username in users and users[username] == password:
+        # Add your authentication logic here
+        if username == 'admin' and password == 'password':  # Replace with proper authentication
             session['username'] = username
-            # Return success message in JSON format
-            return jsonify({'success': True, 'message': 'Login successful!'})
-        else:
-            # Return failure message in JSON format
-            return jsonify({'success': False, 'message': 'Invalid username or password'})
-    return render_template("login.html")    
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    x=os.listdir('uploads/')
-    for z in x:
-       os.remove(f"uploads/{z}")
-    # Check if the user is logged in
-    if 'username' not in session:
-        flash('You must be logged in to upload files.', 'danger')
-        return redirect(url_for('login'))
+            return jsonify({'success': True})
+        return jsonify({'success': False, 'message': 'Invalid credentials'})
+    return render_template('login.html')
 
-    # Get the prompt and file from the form
-    #prompt = request.form.get('prompt')
-    file = request.files.get('file')
-
-    # Validate inputs
-    if not file:
-        flash('Prompt and file are required!', 'danger')
-        return redirect(url_for('login'))
-
-    # Save the file to the upload folder
-    try:
-        filename = file.filename
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        try:
-             xoxo=file_management(filename)
-             print(xoxo)
-        except:
-             pass     
-        flash('File uploaded successfully!', 'success')
-    except Exception as e:
-        traceback.print_exc()
-        flash(f'Error uploading file: {e}', 'danger')
-
-    # Redirect to the home page after upload
-    return redirect(url_for('index'))
 @app.route('/logout')
 def logout():
     session.pop('username', None)
-    flash('You have successfully logged out.', 'info')
-    return redirect(url_for('index'))
-def file_management(filename):
-  
-  aws_access_key_id = 'AKIAS74TL54QO24WOPEC'
-  aws_secret_access_key = '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'
-  assistant_id="asst_D8x26bB9HstXP5EaqiI5ejaX"
-  client=OpenAI(api_key = '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')
-  files_id_list=[]
-  non_vector_store_files=[]
-  lista=client.files.list()
-  for x in lista:
-      print(x.filename)
-      files_id_list.append(x.id) 
-  vector_store_files = client.beta.vector_stores.files.list(
-    vector_store_id="vs_wPopVll0WXdAaEEiBGEH1g4M"
-  )
-  vector_file_id_list=[]
-  for x in vector_store_files:
-    print(x.id)
-    vector_file_id_list.append(x.id)
-  for x in files_id_list:
-            if x not in vector_file_id_list:
-                non_vector_store_files.append(x)
+    return redirect(url_for('login'))
 
-      
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'username' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
 
-  """vector_stores = client.beta.vector_stores.list()
-  print(vector_stores)
-  exit()
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
 
-  vector_store = client.beta.vector_stores.create(
-    name="Support FAQ"
-  )"""
-  #upload all files in file_vault folder one by one
-  files_list=os.listdir("uploads")
-  #files_id_list=[]
-  for i,file in enumerate(files_list):
-    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+
+    if file and allowed_file(file.filename):
+        try:
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+
+            # Analyze document
+            content = analyze_sap_document(file_path)
+            if content:
+                # Add document content to conversation context
+                get_module_conversation(module_name='home').append({
+                    'role': 'system',
+                    'content': f"Document uploaded: {filename}\nContent: {content[:1000]}..."  # Truncate long documents
+                })
+                save_conversation_to_file(get_module_conversation(module_name='home'), 'conversation_history.txt')
+
+                # Add a welcome message to guide the user
+                welcome_message = (
+                    f"I've analyzed the document '{filename}'. You can now ask me questions about its contents. "
+                    "For example:\n"
+                    "- What are the main topics covered in this document?\n"
+                    "- Can you explain the technical requirements?\n"
+                    "- What BADIs or function modules are mentioned?"
+                )
+                
+                get_module_conversation(module_name='home').append({
+                    'role': 'assistant',
+                    'content': welcome_message
+                })
+                save_conversation_to_file(get_module_conversation(module_name='home'), 'conversation_history.txt')
+
+                return jsonify({
+                    'success': True, 
+                    'message': 'File uploaded successfully',
+                    'systemMessage': welcome_message
+                })
+
+            return jsonify({
+                'success': True,
+                'message': 'File uploaded successfully',
+                'systemMessage': f"Document '{filename}' has been uploaded successfully. However, I couldn't analyze its contents. Please make sure it's a text-based document."
+            })
+
+        except Exception as e:
+            logger.error(f"Error uploading file: {e}")
+            return jsonify({'error': str(e)}), 500
+
+    return jsonify({'error': 'File type not allowed. Please upload a .txt, .pdf, .doc, or .docx file.'}), 400
+
+@app.route('/clear_history', methods=['POST'])
+def clear_history():
+    if 'username' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
 
     try:
-      
-        file_upl=client.files.create(
-          file=open(f"uploads/{file}", "rb"),
-          purpose='assistants'
-        )
-          
-        if(file.endswith(".docx") or file.endswith(".doc") or file.endswith(".pdf") or file.endswith(".txt") or file.endswith(".pptx")):
-          vector_file_id_list.append(file_upl.id)
-          vector_store_file_batch = client.beta.vector_stores.file_batches.create(
-          vector_store_id="vs_wPopVll0WXdAaEEiBGEH1g4M",
-          file_ids=vector_file_id_list,
-            ) 
-          client.beta.assistants.update(
-            assistant_id,
-            
-            tool_resources={"code_interpreter": {"file_ids":non_vector_store_files},"file_search": {"vector_store_ids": ["vs_wPopVll0WXdAaEEiBGEH1g4M"]}},
+        for module in conversation_history:
+            conversation_history[module].clear()
+        if os.path.exists('conversation_history.txt'):
+            os.remove('conversation_history.txt')
+        return jsonify({'success': True})
+    except Exception as e:
+        logger.error(f"Error clearing history: {e}")
+        return jsonify({'error': str(e)}), 500
 
-        )         
-          
-        else:
-        
-            for x in files_id_list:
-                if x not in vector_file_id_list:
-                    non_vector_store_files.append(x)
-            non_vector_store_files.append(file_upl.id) 
-            assistant = client.beta.assistants.update(
-                assistant_id,
-                
-                tool_resources={"code_interpreter": {"file_ids":non_vector_store_files},"file_search": {"vector_store_ids": ["vs_wPopVll0WXdAaEEiBGEH1g4M"]}},
-
-            )
-
-      
-        
-        def upload_to_s3(filename):
-                  
-                  session = boto3.Session(
-                      aws_access_key_id=aws_access_key_id,
-                      aws_secret_access_key=aws_secret_access_key
-                  )
-                  s3 = session.client('s3')
-                  try:
-                          with open("uploads/"+filename, 'rb') as file_data:    
-                              response = s3.put_object(
-                                      Bucket="mygo-sapiq",
-                                      Key=filename,
-                                      Body=file_data
-                                  )
-                          status_s3="SUCCESS"
-                          #print(status_s3)
-                          return("SUCCESS")
-                  except Exception as e: 
-                              
-                              status_s3=f"ERROR {e}" 
-                              #print(status_s3)
-                              return status_s3 
-                  
-
-        upload_to_s3(filename)         
-        #os.remove(f"uploads/{file}")
-    except:
-      traceback.print_exc()
-      pass  
-  
-  return "SUCCESS"
-if __name__=='__main__':
-    app.run("0.0.0.0",debug=True,port=8080)
-
+if __name__ == "__main__":
+    # Load conversation history on startup
+    for module in conversation_history:
+        conversation_history[module] = load_conversation_from_file(f'{module}_conversation_history.txt')
+    app.run(debug=True)
